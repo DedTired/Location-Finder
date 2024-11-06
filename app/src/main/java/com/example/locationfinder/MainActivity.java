@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
@@ -229,17 +230,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        databaseReference.orderByChild("address").equalTo(address).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.orderByChild("address").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Location location = snapshot.getValue(Location.class);
-                        if (location != null) {
-                            queryResultTextView.setText("Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-                        }
+                boolean found = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Location location = snapshot.getValue(Location.class);
+                    if (location != null && location.getAddress().trim().toLowerCase().equals(address)) {
+                        queryResultTextView.setText("Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
+                        found = true;
+                        break;
                     }
-                } else {
+                }
+                if (!found) {
                     queryResultTextView.setText("No location found with that address");
                 }
             }
@@ -250,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void updateLocation() {
         String address = ((TextView) findViewById(R.id.inputUpdateAddress)).getText().toString().trim();
@@ -287,36 +291,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteLocation() {
-        String address = ((TextView) findViewById(R.id.inputDeleteAddress)).getText().toString().trim();
+        String address = ((TextView) findViewById(R.id.inputDeleteAddress)).getText().toString().trim().toLowerCase();
 
         if (address.isEmpty()) {
-            deleteResultTextView.setText("Please enter the address to delete");
+            deleteResultTextView.setText("Please enter an address to delete");
             return;
         }
 
-        databaseReference.orderByChild("address").equalTo(address).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        snapshot.getRef().removeValue().addOnSuccessListener(aVoid -> {
-                            deleteResultTextView.setText("Location deleted successfully");
-                            clearInputFields();
-                        }).addOnFailureListener(e -> {
-                            deleteResultTextView.setText("Failed to delete location: " + e.getMessage());
-                        });
-                    }
-                } else {
-                    deleteResultTextView.setText("No location found with that address");
-                }
-            }
+        // Add confirmation dialog before deletion
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Location")
+                .setMessage("Are you sure you want to delete this location?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    // Proceed with deletion if confirmed
+                    databaseReference.orderByChild("address").equalTo(address).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    snapshot.getRef().removeValue();
+                                }
+                                deleteResultTextView.setText("Location deleted successfully");
+                            } else {
+                                deleteResultTextView.setText("No location found with that address");
+                            }
+                        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                deleteResultTextView.setText("Error while deleting: " + databaseError.getMessage());
-            }
-        });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            deleteResultTextView.setText("Failed to delete location: " + databaseError.getMessage());
+                        }
+                    });
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
+
 
     private void clearInputFields() {
         ((TextView) findViewById(R.id.inputAddress)).setText("");

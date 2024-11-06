@@ -21,6 +21,8 @@
             android:padding="16dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,6 +47,7 @@
             app:iconTint="@color/primaryDark"
             android:textColor="@color/primaryDark"
             app:backgroundTint="@color/primaryLight" />
+
 
         <!-- Add Section - Initially Collapsed -->
         <LinearLayout
@@ -120,6 +123,7 @@
                 app:iconTint="@color/primaryDark"
                 android:textColor="@color/primaryDark"
                 app:backgroundTint="@color/primaryLight" />
+
 
             <TextView
                 android:id="@+id/addResultTextView"
@@ -294,6 +298,7 @@
                 android:textColor="@color/primaryDark"
                 app:backgroundTint="@color/primaryLight" />
 
+
             <TextView
                 android:id="@+id/updateResultTextView"
                 android:layout_width="wrap_content"
@@ -373,7 +378,19 @@
                 android:textSize="14sp"
                 android:textColor="@color/textSecondary"
                 android:layout_marginTop="8dp" />
+
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonShowAllLocations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show All Locations"
+            android:textColor="@color/primaryDark"
+            style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+
+
 
     </LinearLayout>
 </ScrollView>
