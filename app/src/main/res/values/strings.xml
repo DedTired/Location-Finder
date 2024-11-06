@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Location Finder</string>
+    <string name="address">Address</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="add_location">Add Location</string>
+    <string name="query_location">Query Location</string>
+    <string name="update_location">Update Location</string>
+    <string name="delete_location">Delete Location</string>
+    <string name="result">Result</string>
+    <string name="location_id">Location ID</string>
+</resources>

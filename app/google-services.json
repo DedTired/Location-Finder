@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "714410743227",
+    "project_id": "location-finder-23b2c",
+    "storage_bucket": "location-finder-23b2c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714410743227:android:cadfdfb62b327a90a0e09e",
+        "android_client_info": {
+          "package_name": "com.example.locationfinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeM22FBnCppBgTGSqRmD-FErYa2Nc-4lA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
