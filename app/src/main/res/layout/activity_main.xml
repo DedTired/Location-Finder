@@ -6,12 +6,47 @@
     android:padding="16dp"
     android:background="@color/background_color">
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Add Location Section -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:padding="16dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location_finder"
+                android:textSize="28sp"
+                android:textColor="@color/primaryDark"
+                android:textStyle="bold"
+                android:layout_gravity="center" />
+        </androidx.appcompat.widget.Toolbar>
+
+
+        <!-- Add Section Toggle Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonToggleAddSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/add_location"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_add"
+            app:iconGravity="textStart"
+            app:iconTint="@color/primaryDark"
+            android:textColor="@color/primaryDark"
+            app:backgroundTint="@color/primaryLight" />
+
+        <!-- Add Section - Initially Collapsed -->
         <LinearLayout
             android:id="@+id/addSection"
             android:layout_width="match_parent"
@@ -20,21 +55,22 @@
             android:background="@color/white"
             android:elevation="4dp"
             android:padding="16dp"
+            android:visibility="gone"
             android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Location"
+                android:text="@string/add_location"
                 android:textSize="18sp"
                 android:textColor="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp" />
 
-            <!-- Add Location Inputs -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
+                android:hint="@string/address"
                 app:boxBackgroundMode="outline"
                 android:layout_marginBottom="8dp">
 
@@ -47,7 +83,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Latitude"
+                android:hint="@string/latitude"
                 app:boxBackgroundMode="outline"
                 android:layout_marginBottom="8dp">
 
@@ -61,7 +97,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Longitude"
+                android:hint="@string/longitude"
                 app:boxBackgroundMode="outline"
                 android:layout_marginBottom="16dp">
 
@@ -76,11 +112,40 @@
                 android:id="@+id/buttonAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Location"
+                android:text="@string/add_location"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_gravity="center_horizontal"
+                app:icon="@drawable/ic_add"
+                app:iconTint="@color/primaryDark"
+                android:textColor="@color/primaryDark"
+                app:backgroundTint="@color/primaryLight" />
+
+            <TextView
+                android:id="@+id/addResultTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
-        <!-- Query Location Section -->
+
+        <!-- Query Section Toggle Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonToggleQuerySection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/query_location"
+            android:textSize="18sp"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconTint="@color/primaryDark"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/primaryDark"
+            app:backgroundTint="@color/primaryLight" />
+
+        <!-- Query Section - Initially Collapsed -->
         <LinearLayout
             android:id="@+id/querySection"
             android:layout_width="match_parent"
@@ -89,20 +154,22 @@
             android:background="@color/white"
             android:elevation="4dp"
             android:padding="16dp"
+            android:visibility="gone"
             android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Query Location"
+                android:text="@string/query_location"
                 android:textSize="18sp"
                 android:textColor="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
+                android:hint="@string/address"
                 app:boxBackgroundMode="outline"
                 android:layout_marginBottom="8dp">
 
@@ -116,24 +183,40 @@
                 android:id="@+id/buttonQuery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Query Location"
+                android:text="@string/query_location"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:icon="@drawable/ic_search"
+                app:iconTint="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/primaryDark"
+                app:backgroundTint="@color/primaryLight" />
 
-            <!-- Add a TextView to display the result -->
             <TextView
                 android:id="@+id/queryResultTextView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:text=""
                 android:textSize="14sp"
-                android:textColor="@color/primaryDark"
+                android:textColor="@color/textSecondary"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
+        <!-- Update Section Toggle Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonToggleUpdateSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/update_location"
+            app:icon="@drawable/ic_update"
+            android:textSize="18sp"
+            app:iconGravity="textStart"
+            app:iconTint="@color/primaryDark"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/primaryDark"
+            app:backgroundTint="@color/primaryLight" />
 
-
-        <!-- Update Location Section -->
+        <!-- Update Section - Initially Collapsed -->
         <LinearLayout
             android:id="@+id/updateSection"
             android:layout_width="match_parent"
@@ -142,26 +225,100 @@
             android:background="@color/white"
             android:elevation="4dp"
             android:padding="16dp"
+            android:visibility="gone"
             android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update Location"
+                android:text="@string/update_location"
                 android:textSize="18sp"
                 android:textColor="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp" />
+
+            <!-- Address -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/address"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputUpdateAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Latitude -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/latitude"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputUpdateLatitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Longitude -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/longitude"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputUpdateLongitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update Location"
+                android:text="@string/update_location"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:icon="@drawable/ic_update"
+                app:iconTint="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/primaryDark"
+                app:backgroundTint="@color/primaryLight" />
+
+            <TextView
+                android:id="@+id/updateResultTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
 
-        <!-- Delete Location Section -->
+        <!-- Delete Section Toggle Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonToggleDeleteSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_location"
+            app:icon="@drawable/ic_delete"
+            app:iconTint="@color/primaryDark"
+            android:textSize="18sp"
+            app:iconGravity="textStart"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/primaryDark"
+            app:backgroundTint="@color/primaryLight" />
+
+        <!-- Delete Section - Initially Collapsed -->
         <LinearLayout
             android:id="@+id/deleteSection"
             android:layout_width="match_parent"
@@ -170,34 +327,53 @@
             android:background="@color/white"
             android:elevation="4dp"
             android:padding="16dp"
+            android:visibility="gone"
             android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete Location"
+                android:text="@string/delete_location"
                 android:textSize="18sp"
                 android:textColor="@color/primaryDark"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/address"
+                app:boxBackgroundMode="outline"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputDeleteAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete Location"
+                android:text="@string/delete_location"
                 android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
-        </LinearLayout>
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_gravity="center_horizontal"
+                app:icon="@drawable/ic_delete"
+                app:iconTint="@color/primaryDark"
+                android:textColor="@color/primaryDark"
+                app:backgroundTint="@color/primaryLight" />
 
-        <TextView
-            android:id="@+id/resultTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:textSize="16sp"
-            android:textColor="@color/primaryDark"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/deleteResultTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
