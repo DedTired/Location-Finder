@@ -17,10 +17,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
-
+    // declare sections, variables and result text views
     private LinearLayout addSection, querySection, updateSection, deleteSection;
     private DatabaseReference databaseReference;
     private TextView queryResultTextView, addResultTextView, updateResultTextView, deleteResultTextView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +38,19 @@ public class MainActivity extends AppCompatActivity {
         updateSection = findViewById(R.id.updateSection);
         deleteSection = findViewById(R.id.deleteSection);
 
+        // Find views for each TextView
         queryResultTextView = findViewById(R.id.queryResultTextView);
         addResultTextView = findViewById(R.id.addResultTextView);
         updateResultTextView = findViewById(R.id.updateResultTextView);
         deleteResultTextView = findViewById(R.id.deleteResultTextView);
 
+        // Find views for each button
         MaterialButton buttonAdd = findViewById(R.id.buttonAdd);
         MaterialButton buttonQuery = findViewById(R.id.buttonQuery);
         MaterialButton buttonUpdate = findViewById(R.id.buttonUpdate);
         MaterialButton buttonDelete = findViewById(R.id.buttonDelete);
 
+        // Find views for each buttonToggle
         MaterialButton buttonToggleAddSection = findViewById(R.id.buttonToggleAddSection);
         MaterialButton buttonToggleQuerySection = findViewById(R.id.buttonToggleQuerySection);
         MaterialButton buttonToggleUpdateSection = findViewById(R.id.buttonToggleUpdateSection);
@@ -63,15 +68,20 @@ public class MainActivity extends AppCompatActivity {
         // Set up Delete button listener
         buttonDelete.setOnClickListener(v -> deleteLocation());
 
+
+
         // Set up Toggle button listeners to expand/collapse each section
         buttonToggleAddSection.setOnClickListener(v -> toggleSectionVisibility(addSection));
         buttonToggleQuerySection.setOnClickListener(v -> toggleSectionVisibility(querySection));
         buttonToggleUpdateSection.setOnClickListener(v -> toggleSectionVisibility(updateSection));
         buttonToggleDeleteSection.setOnClickListener(v -> toggleSectionVisibility(deleteSection));
 
+        //calls method to add locations to the database, only run once then comment out
 //        addSampleLocations();
 
     }
+
+//method to add locations to the database, only run once then comment out
 //    private void addSampleLocations() {
 //        String[] locations = {
 //                "Oshawa,43.8971,-78.8658",
@@ -187,42 +197,83 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 
-
-
+    //visibility for card views
     private void toggleSectionVisibility(View section) {
         if (section.getVisibility() == View.GONE) {
+            //displays card
             section.setVisibility(View.VISIBLE);
+           // collapses card
         } else {
             section.setVisibility(View.GONE);
         }
     }
 
+    // method to add location
     private void addLocation() {
-        String address = ((TextView) findViewById(R.id.inputAddress)).getText().toString().trim();
+
+        // inputs from the TextView, convert it to lowercase, and trim whitespaces
+        String address = ((TextView) findViewById(R.id.inputAddress)).getText().toString().trim().toLowerCase();
         String latitudeStr = ((TextView) findViewById(R.id.inputLatitude)).getText().toString().trim();
         String longitudeStr = ((TextView) findViewById(R.id.inputLongitude)).getText().toString().trim();
 
+        // check if any fields are empty
         if (address.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
             addResultTextView.setText("Please fill in all fields");
             return;
         }
 
-        double latitude = Double.parseDouble(latitudeStr);
-        double longitude = Double.parseDouble(longitudeStr);
-        String id = databaseReference.push().getKey();
-
-        Location location = new Location(id, address, latitude, longitude);
-        if (id != null) {
-            databaseReference.child(id).setValue(location).addOnSuccessListener(aVoid -> {
-                addResultTextView.setText("Location added successfully");
-                clearInputFields();
-            }).addOnFailureListener(e -> {
-                addResultTextView.setText("Failed to add location: " + e.getMessage());
-            });
+        //initialize variables to store parsed latitude and longitude values
+        double latitude;
+        double longitude;
+        try {
+            //attempt to parse the latitude and longitude input to double values
+            latitude = Double.parseDouble(latitudeStr);
+            longitude = Double.parseDouble(longitudeStr);
+        } catch (NumberFormatException e) {
+            addResultTextView.setText("Please enter valid numeric values for latitude and longitude");
+            return;
         }
+
+        // fetch the highest current ID in the database to determine the next ID
+        databaseReference.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int newId = 1; // Default to 1 if there are no entries
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String lastId = snapshot.getKey();
+                    if (lastId != null) {
+                        try {
+                            newId = Integer.parseInt(lastId) + 1; // Increment the highest ID
+                        } catch (NumberFormatException e) {
+                            addResultTextView.setText("Error determining new ID");
+                            return;
+                        }
+                    }
+                }
+
+                // use the next consecutive ID as the key for the new location
+                Location location = new Location(String.valueOf(newId), address, latitude, longitude);
+                databaseReference.child(String.valueOf(newId)).setValue(location)
+                        .addOnSuccessListener(aVoid -> {
+                            addResultTextView.setText("Location added successfully");
+                            clearInputFields();
+                        })
+                        .addOnFailureListener(e -> addResultTextView.setText("Failed to add location: " + e.getMessage()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                addResultTextView.setText("Failed to add location: " + databaseError.getMessage());
+            }
+        });
+        clearInputFields();
     }
 
+
+
+    // method to query location
     private void queryLocation() {
+        //get trimmed and lowercase address input
         String address = ((TextView) findViewById(R.id.inputQueryAddress)).getText().toString().trim().toLowerCase();
 
         if (address.isEmpty()) {
@@ -230,12 +281,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // query database by "address" field
         databaseReference.orderByChild("address").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean found = false;
+                // iterate through each snapshot
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Location location = snapshot.getValue(Location.class);
+
+                    // check if location matches input address
                     if (location != null && location.getAddress().trim().toLowerCase().equals(address)) {
                         queryResultTextView.setText("Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
                         found = true;
@@ -254,9 +309,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    // method to update location
     private void updateLocation() {
-        String address = ((TextView) findViewById(R.id.inputUpdateAddress)).getText().toString().trim();
+        // get trimmed inputs for address, latitude, and longitude
+        String address = ((TextView) findViewById(R.id.inputUpdateAddress)).getText().toString().trim().toLowerCase();
         String latitudeStr = ((TextView) findViewById(R.id.inputUpdateLatitude)).getText().toString().trim();
         String longitudeStr = ((TextView) findViewById(R.id.inputUpdateLongitude)).getText().toString().trim();
 
@@ -265,9 +321,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        double latitude = Double.parseDouble(latitudeStr);
-        double longitude = Double.parseDouble(longitudeStr);
+        //initialize variables to store parsed latitude and longitude values
+        double latitude;
+        double longitude;
+        try {
+            //attempt to parse the latitude and longitude input to double values
+            latitude = Double.parseDouble(latitudeStr);
+            longitude = Double.parseDouble(longitudeStr);
+        } catch (NumberFormatException e) {
+            updateResultTextView.setText("Please enter valid numeric values for latitude and longitude");
+            return;
+        }
 
+        // query  database for address and update latitude and longitude
         databaseReference.orderByChild("address").equalTo(address).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -275,9 +341,10 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         snapshot.getRef().child("latitude").setValue(latitude);
                         snapshot.getRef().child("longitude").setValue(longitude);
+                        updateResultTextView.setText("Location updated successfully");
+                        clearInputFields();
+                        break; // Stop after the first match
                     }
-                    updateResultTextView.setText("Location updated successfully");
-                    clearInputFields();
                 } else {
                     updateResultTextView.setText("No location found with that address");
                 }
@@ -288,8 +355,12 @@ public class MainActivity extends AppCompatActivity {
                 updateResultTextView.setText("Failed to update location: " + databaseError.getMessage());
             }
         });
+        clearInputFields();
     }
 
+
+
+    // method to delete location
     private void deleteLocation() {
         String address = ((TextView) findViewById(R.id.inputDeleteAddress)).getText().toString().trim().toLowerCase();
 
@@ -298,15 +369,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Add confirmation dialog before deletion
+        // show confirmation dialog before deletion
         new AlertDialog.Builder(this)
                 .setTitle("Delete Location")
                 .setMessage("Are you sure you want to delete this location?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    // Proceed with deletion if confirmed
+                    // proceed with deletion if confirmed
                     databaseReference.orderByChild("address").equalTo(address).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            // delete the location if it exists
                             if (dataSnapshot.exists()) {
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                     snapshot.getRef().removeValue();
@@ -319,16 +391,19 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // handle deletion error
                             deleteResultTextView.setText("Failed to delete location: " + databaseError.getMessage());
                         }
                     });
+                    clearInputFields();
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
-
+    // method to clear input field
     private void clearInputFields() {
+        // clear all input fields for address, latitude, and longitude
         ((TextView) findViewById(R.id.inputAddress)).setText("");
         ((TextView) findViewById(R.id.inputLatitude)).setText("");
         ((TextView) findViewById(R.id.inputLongitude)).setText("");

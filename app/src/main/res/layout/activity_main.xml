@@ -6,12 +6,11 @@
     android:padding="16dp"
     android:background="@color/background_color">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -380,17 +379,6 @@
                 android:layout_marginTop="8dp" />
 
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonShowAllLocations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Show All Locations"
-            android:textColor="@color/primaryDark"
-            style="@style/Widget.MaterialComponents.Button.TextButton" />
-
-
-
 
     </LinearLayout>
 </ScrollView>

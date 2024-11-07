@@ -6,7 +6,7 @@ public class Location {
     private double latitude;
     private double longitude;
 
-    // Empty constructor required for Firebase
+    // empty constructor required for Firebase
     public Location() {}
 
     public Location(String id, String address, double latitude, double longitude) {
